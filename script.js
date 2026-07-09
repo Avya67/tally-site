@@ -12,7 +12,7 @@
    Leave as empty string "" to keep the site running in offline
    demo mode until your webhook is ready.
 ----------------------------------------------------------------*/
-const N8N_WEBHOOK_URL = "https://n8ngc.codeblazar.org/webhook-test/887baf2a-a560-43b7-b6bf-7fb9902cbe35"; // e.g. "https://your-n8n-instance.app.n8n.cloud/webhook/tally-chat"
+const N8N_WEBHOOK_URL = "https://n8ngc.codeblazar.org/webhook/887baf2a-a560-43b7-b6bf-7fb9902cbe35"; // e.g. "https://your-n8n-instance.app.n8n.cloud/webhook/tally-chat"
 
 /* =========================
    NAV — highlight current page
