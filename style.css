@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Archivo+Black&display=swap');
 
 :root{
   --ink:#1F3B2C;
@@ -36,7 +36,7 @@ a{color:inherit;}
   border-bottom:1px solid rgba(147,163,199,0.2);
 }
 .nav-mark{
-  font-family:'Archivo Black',sans-serif;
+  font-family:'Silkscreen',monospace;
   font-size:1.3rem;
   letter-spacing:0.5px;
 }
@@ -44,6 +44,17 @@ a{color:inherit;}
 .nav-links{display:flex;gap:28px;list-style:none;margin:0;padding:0;font-family:'Space Grotesk',sans-serif;font-size:0.95rem;}
 .nav-links a{text-decoration:none;opacity:0.8;transition:opacity .15s;}
 .nav-links a:hover,.nav-links a.active{opacity:1;color:var(--yellow);}
+
+.nav-toggle{
+  display:none;
+  background:transparent;
+  border:1.5px solid var(--slate);
+  border-radius:8px;
+  width:40px;height:40px;
+  color:var(--paper);
+  font-size:1.1rem;
+  cursor:pointer;
+}
 
 /* ---------- BUTTONS ---------- */
 .btn{
@@ -60,8 +71,8 @@ a{color:inherit;}
 /* ---------- HERO ---------- */
 .hero{
   position:relative;
-  padding:90px 0 140px;
-  overflow:hidden;
+  padding:80px 0 60px;
+  text-align:center;
 }
 .eyebrow{
   font-family:'IBM Plex Mono',monospace;
@@ -71,33 +82,46 @@ a{color:inherit;}
   text-transform:uppercase;
   margin-bottom:18px;
 }
-.headline{
-  font-family:'Archivo Black',sans-serif;
-  font-size:clamp(2.8rem,8vw,6.2rem);
-  line-height:0.98;
-  margin:0 0 26px;
-  max-width:820px;
+.wordmark{
+  font-family:'Silkscreen',monospace;
+  font-weight:700;
+  font-size:clamp(3rem,12vw,7.5rem);
+  line-height:1;
+  margin:0 0 20px;
+  letter-spacing:2px;
 }
-.headline .accent{color:var(--yellow);}
+.wordmark .accent{color:var(--yellow);}
+.wordmark .char-in{
+  display:inline-block;
+  opacity:0;
+  transform:translateY(24px);
+  animation:charIn 0.5s cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes charIn{
+  to{opacity:1; transform:translateY(0);}
+}
 .sub{
-  font-size:1.15rem;
+  font-size:1.1rem;
   color:var(--slate);
   max-width:520px;
   line-height:1.6;
-  margin-bottom:34px;
+  margin:0 auto 30px;
 }
-.hero-cta{display:flex;gap:16px;flex-wrap:wrap;}
+.hero-cta{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
 
-/* draggable sticky notes */
+/* sticky notes row, below the title */
 .note-field{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  z-index:1;
+  position:relative;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:16px;
+  max-width:900px;
+  margin:56px auto 0;
+  min-height:140px;
 }
 .note{
-  position:absolute;
-  pointer-events:auto;
+  position:relative;
   width:150px;
   padding:14px 16px;
   border-radius:4px;
@@ -108,10 +132,12 @@ a{color:inherit;}
   cursor:grab;
   user-select:none;
   box-shadow:0 10px 25px rgba(0,0,0,0.35);
-  transition:box-shadow .15s;
+  transition:box-shadow .15s, transform .15s;
 }
+.note:nth-child(odd){transform:rotate(-3deg);}
+.note:nth-child(even){transform:rotate(2deg);}
 .note:active{cursor:grabbing;box-shadow:0 18px 35px rgba(0,0,0,0.5);}
-.note.dragging{z-index:40;}
+.note.dragging{z-index:40;position:absolute;transform:none;}
 .note-tag{
   font-family:'IBM Plex Mono',monospace;
   font-size:0.65rem;
@@ -175,6 +201,12 @@ section{padding:90px 0;}
   border-radius:var(--radius);
   padding:34px;
   font-family:'Space Grotesk',sans-serif;
+}
+.stat-card p{
+  color:#FFFFFF;
+  font-weight:500;
+  font-size:1.05rem;
+  line-height:1.6;
 }
 .stat-num{
   font-family:'Archivo Black',sans-serif;
@@ -346,7 +378,359 @@ footer{
   display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
 }
 
-@media (max-width:600px){
-  .nav-links{display:none;}
-  .step{grid-template-columns:1fr;}
+/* =========================================================
+   SCROLL REVEAL — generic utility, toggled by JS IntersectionObserver
+   ========================================================= */
+.reveal{
+  opacity:0;
+  transform:translateY(30px);
+  transition:opacity 0.7s cubic-bezier(.2,.8,.2,1), transform 0.7s cubic-bezier(.2,.8,.2,1);
 }
+.reveal.in{opacity:1; transform:translateY(0);}
+
+/* =========================================================
+   CALENDAR STRIP — decorative, Abetka-style backdrop, not live data
+   ========================================================= */
+.calendar-section{
+  position:relative;
+  padding:80px 0;
+  overflow:hidden;
+}
+.calendar-bg{
+  position:absolute;
+  inset:0;
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:6px;
+  padding:40px;
+  opacity:0.16;
+  z-index:0;
+  pointer-events:none;
+}
+.calendar-bg div{
+  border:1.5px solid var(--slate);
+  border-radius:6px;
+  aspect-ratio:1;
+}
+.calendar-content{
+  position:relative;
+  z-index:1;
+  text-align:center;
+}
+.calendar-content p{
+  color:var(--slate);
+  max-width:520px;
+  margin:0 auto;
+  line-height:1.7;
+  font-size:1.05rem;
+}
+.mini-calendar{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:8px;
+  max-width:420px;
+  margin:34px auto 0;
+}
+.mini-calendar .day{
+  aspect-ratio:1;
+  border-radius:6px;
+  background:var(--ink-soft);
+  border:1px solid rgba(147,163,199,0.3);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.75rem;
+  color:var(--slate);
+}
+.mini-calendar .day.marked{
+  background:var(--yellow);
+  color:var(--ink);
+  border-color:var(--yellow);
+  font-weight:700;
+}
+.mini-calendar .day.urgent{
+  background:var(--coral);
+  color:var(--ink);
+  border-color:var(--coral);
+  font-weight:700;
+}
+
+/* =========================================================
+   SLOT MACHINE
+   ========================================================= */
+.slot-section{
+  padding:100px 0;
+  text-align:center;
+  position:relative;
+}
+.slot-machine{
+  position:relative;
+  max-width:420px;
+  margin:40px auto 0;
+  padding:26px 26px 34px;
+  background:var(--ink-soft);
+  border-radius:22px;
+  border:4px solid var(--yellow);
+  transform:scale(0.85);
+  opacity:0;
+  transition:transform 0.8s cubic-bezier(.2,.8,.2,1), opacity 0.8s ease;
+}
+.slot-machine.in{
+  transform:scale(1);
+  opacity:1;
+}
+.marquee{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:16px;
+}
+.marquee span{
+  width:9px;height:9px;border-radius:50%;
+  background:var(--yellow);
+  animation:marqueeBlink 1.4s infinite;
+}
+.marquee span:nth-child(odd){animation-delay:0.35s;}
+@keyframes marqueeBlink{
+  0%,100%{opacity:0.25;}
+  50%{opacity:1;}
+}
+.reels{
+  display:flex;
+  gap:10px;
+  background:var(--ink);
+  border-radius:12px;
+  padding:18px;
+  margin-bottom:22px;
+}
+.reel{
+  flex:1;
+  height:90px;
+  background:var(--paper);
+  border-radius:8px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Silkscreen',monospace;
+  font-size:1.6rem;
+  color:var(--ink);
+  position:relative;
+}
+.reel .reel-strip{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.reel.spinning .reel-strip{
+  animation:reelSpin 0.15s linear infinite;
+}
+@keyframes reelSpin{
+  0%{transform:translateY(0);}
+  100%{transform:translateY(30px);}
+}
+.slot-result{
+  min-height:52px;
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  color:var(--paper);
+  font-size:1.05rem;
+  margin-bottom:20px;
+  padding:0 10px;
+}
+.slot-result .tag{
+  display:block;
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:400;
+  font-size:0.75rem;
+  color:var(--slate);
+  margin-bottom:4px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+.lever-btn{
+  font-family:'Silkscreen',monospace;
+  background:var(--coral);
+  color:var(--ink);
+  border:none;
+  border-radius:100px;
+  padding:14px 30px;
+  font-size:0.95rem;
+  cursor:pointer;
+  box-shadow:0 6px 0 #b34d2c;
+  transition:transform 0.1s;
+}
+.lever-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #b34d2c;}
+.lever-btn:disabled{opacity:0.6;cursor:default;}
+.slot-note{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.7rem;
+  color:var(--slate);
+  margin-top:36px;
+}
+
+/* =========================================================
+   TAROT CHARACTER CARDS + QUIZ
+   ========================================================= */
+.tarot-section{padding:100px 0;text-align:center;}
+.tarot-grid{
+  position:relative;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:26px;
+  max-width:900px;
+  margin:50px auto 40px;
+  min-height:340px;
+}
+.tarot-card{
+  width:140px;
+  height:220px;
+  border-radius:12px;
+  background:linear-gradient(160deg, var(--ink-soft), var(--ink));
+  border:2px solid var(--yellow);
+  padding:14px 10px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:space-between;
+  opacity:0;
+  transform:translate(var(--dx,0), var(--dy,-40px)) rotate(var(--rot,0deg));
+  transition:transform 0.9s cubic-bezier(.2,.8,.2,1), opacity 0.9s ease;
+}
+.tarot-card.in{
+  opacity:1;
+  transform:translate(0,0) rotate(var(--settle-rot,0deg));
+}
+.tarot-card.collected{
+  transform:translate(0,0) rotate(0deg) !important;
+  transition:transform 0.6s cubic-bezier(.3,.7,.3,1), opacity 0.4s ease;
+}
+.tarot-portrait{
+  width:64px;height:64px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.8rem;
+  margin-top:6px;
+}
+.tarot-name{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  font-size:0.85rem;
+  text-align:center;
+}
+.tarot-desc{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.62rem;
+  color:var(--slate);
+  text-align:center;
+  line-height:1.4;
+}
+
+.quiz-box{
+  max-width:480px;
+  margin:0 auto;
+  background:var(--ink-soft);
+  border:1px solid rgba(147,163,199,0.3);
+  border-radius:16px;
+  padding:30px;
+  display:none;
+}
+.quiz-box.active{display:block;}
+.quiz-question{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  font-size:1.1rem;
+  margin-bottom:20px;
+}
+.quiz-options{display:flex;flex-direction:column;gap:10px;}
+.quiz-option{
+  font-family:'Inter',sans-serif;
+  background:var(--ink);
+  border:1px solid var(--slate);
+  color:var(--paper);
+  border-radius:10px;
+  padding:12px 16px;
+  text-align:left;
+  cursor:pointer;
+  font-size:0.92rem;
+}
+.quiz-option:hover{border-color:var(--yellow);}
+.quiz-result{display:none;text-align:center;}
+.quiz-result.active{display:block;}
+.quiz-result .tarot-card{margin:0 auto 18px;opacity:1;transform:none;width:160px;height:250px;}
+.quiz-result .tarot-portrait{width:80px;height:80px;font-size:2.2rem;margin:0 auto;}
+
+/* =========================================================
+   PROGRESS CHART (demo data)
+   ========================================================= */
+.progress-section{padding:0 0 100px;text-align:center;}
+.progress-chart{
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  gap:14px;
+  max-width:480px;
+  height:160px;
+  margin:34px auto 10px;
+}
+.progress-bar{
+  width:32px;
+  border-radius:6px 6px 0 0;
+  background:var(--yellow);
+  transition:height 1s cubic-bezier(.2,.8,.2,1);
+  height:0;
+  position:relative;
+}
+.progress-bar span{
+  position:absolute;
+  bottom:-22px;left:0;right:0;
+  text-align:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.65rem;
+  color:var(--slate);
+}
+.progress-note{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.7rem;
+  color:var(--slate);
+  margin-top:34px;
+}
+
+@media (max-width:600px){
+  .step{grid-template-columns:1fr;}
+
+  .nav-toggle{display:block;}
+  .nav-links{
+    display:none;
+    position:absolute;
+    top:100%;left:0;right:0;
+    flex-direction:column;
+    gap:0;
+    background:var(--ink-soft);
+    border-bottom:1px solid rgba(147,163,199,0.25);
+    padding:10px 28px 18px;
+  }
+  .nav-links.open{display:flex;}
+  .nav-links a{display:block;padding:12px 0;border-bottom:1px solid rgba(147,163,199,0.15);}
+
+  .hero{padding:50px 0 40px;}
+  .note-field{
+    position:static;
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    padding:22px 2px 8px;
+    margin-top:10px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .note{position:static;flex:0 0 auto;width:132px;cursor:default;}
+  .hero-hint{display:none;}
+
+  .chat-shell{height:min(72vh, 560px);}
+  .chat-page{padding-top:30px;padding-bottom:60px;}
+
+  .note-field{justify-content:flex-start;}
+  .tarot-card{width:112px;height:180px;}
+  .slot-machine{max-width:320px;}
+  .reel{height:70px;font-size:1.2rem;}
+}
+
