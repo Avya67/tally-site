@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tally — stop forgetting stuff</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-mark" style="text-decoration:none;">TALL<span>Y</span></a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="how-it-works.html">How it works</a></li>
+    <li><a href="chat.html">Chat</a></li>
+  </ul>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">&#9776;</button>
+</nav>
+
+<header class="hero">
+  <!-- AVYA: sticky notes scattered around the wordmark, absolute + draggable -->
+  <div class="note-field" aria-hidden="true">
+    <div class="note y" style="left:6%; top:60%;"><span class="note-tag">Due Fri</span>Essay draft — 1500 words</div>
+    <div class="note c" style="left:78%; top:14%;"><span class="note-tag">Overdue</span>Quiz 3 — Data Analytics</div>
+    <div class="note p" style="left:74%; top:66%;"><span class="note-tag">CCA</span>Robotics club, 6pm Thu</div>
+    <div class="note b" style="left:4%; top:12%;"><span class="note-tag">Group proj</span>Slides — your 3 slides</div>
+    <div class="note y" style="left:40%; top:78%;"><span class="note-tag">Tmrw</span>Submit CA1 report</div>
+  </div>
+
+  <div class="wrap">
+    <div class="eyebrow">Accj Team · C240 AI Essentials & Innovations</div>
+    <h1 class="wordmark">
+      <span class="char-in">T</span><span class="char-in">A</span><span class="char-in">L</span><span class="char-in">L</span><span class="char-in accent">Y</span>
+    </h1>
+    <p class="sub">Tally reads your real calendar, figures out what's actually urgent, and tells you in plain language — before it's overdue, not after.</p>
+    <div class="hero-cta">
+      <a href="chat.html" class="btn btn-primary">Talk to Tally →</a>
+      <a href="how-it-works.html" class="btn btn-ghost">See how it's built</a>
+    </div>
+    <p class="hero-hint">↖ drag the notes — that's what your week looks like right now.</p>
+  </div>
+</header>
+
+<section class="problem reveal">
+  <div class="wrap">
+    <div class="section-label">The problem</div>
+    <div class="problem-grid">
+      <div>
+        <p>Many students miss deadlines because they're juggling multiple modules, assignments, projects, and revision schedules at once — on top of CCAs. It's not a motivation problem. It's a tracking problem: too many due dates live in too many places, and nothing pulls them together and tells you what matters today.</p>
+        <span class="audience-chip">TARGET: full-time poly students balancing CCA + coursework</span>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">1</div>
+        <p style="margin:0;">missed deadline is usually all it takes to spiral into a stressful week. Tally exists to catch it before it happens — not remind you after.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALENDAR — pure decorative background texture, Abetka-style, no boxed grid -->
+<section class="calendar-section reveal">
+  <div class="calendar-bg" aria-hidden="true">
+    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+  </div>
+  <div class="wrap calendar-content">
+    <div class="section-label">Every date, one place</div>
+    <h2 class="section-title" style="font-family:'Archivo Black',sans-serif;">Your month, at a glance.</h2>
+    <p>No more scattered due dates across five different apps and a group chat. Tally quietly keeps every deadline in one running picture of your month — so nothing slips through by accident.</p>
+  </div>
+</section>
+
+<!-- SLOT MACHINE — scroll-linked vault doors open as you enter, close as you leave -->
+<section class="slot-section reveal" id="slot-section">
+  <div class="wrap">
+    <div class="section-label">Feeling lucky?</div>
+    <h2 class="section-title" style="font-family:'Archivo Black',sans-serif;">Pull for today's task.</h2>
+
+    <div class="slot-stage" id="slot-stage">
+      <div class="slot-machine" id="slot-machine">
+        <div class="machine-dome"><span class="machine-star">★</span></div>
+        <div class="machine-body">
+          <div class="marquee" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="reels">
+            <div class="reel"><div class="reel-strip">⏰</div></div>
+            <div class="reel"><div class="reel-strip">📕</div></div>
+            <div class="reel"><div class="reel-strip">🔥</div></div>
+          </div>
+          <div class="slot-result" id="slot-result"></div>
+          <button class="lever-btn" id="lever-btn">PULL 🎰</button>
+        </div>
+      </div>
+
+      <!-- scroll-linked vault doors: open on the way in, close on the way out -->
+      <div class="slot-doors" aria-hidden="true">
+        <div class="door left"><span>?</span></div>
+        <div class="door right"><span>?</span></div>
+      </div>
+    </div>
+
+    <p class="slot-note">Demo data for now — will pull your real top task once Chua Jiaqi's calendar-read endpoint is connected.</p>
+  </div>
+</section>
+
+<!-- TAROT CHARACTER CARDS — flip face-up one by one on scroll, then collect into a deck beside the quiz -->
+<section class="tarot-section reveal">
+  <div class="wrap">
+    <div class="section-label">Which planner are you?</div>
+    <h2 class="section-title" style="font-family:'Archivo Black',sans-serif;">Find your deadline character.</h2>
+
+    <div class="tarot-grid" id="tarot-grid">
+
+      <div class="tarot-card" data-type="early">
+        <div class="card-inner">
+          <div class="card-face card-back"><span>T</span></div>
+          <div class="card-face card-front">
+            <div class="tarot-portrait" data-portrait="early"></div>
+            <div class="tarot-name">The Early Bird</div>
+            <div class="tarot-desc">Days ahead, calm and collected.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tarot-card" data-type="steady">
+        <div class="card-inner">
+          <div class="card-face card-back"><span>T</span></div>
+          <div class="card-face card-front">
+            <div class="tarot-portrait" data-portrait="steady"></div>
+            <div class="tarot-name">The Steady Planner</div>
+            <div class="tarot-desc">Daily chunks, no surprises.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tarot-card" data-type="diver">
+        <div class="card-inner">
+          <div class="card-face card-back"><span>T</span></div>
+          <div class="card-face card-front">
+            <div class="tarot-portrait" data-portrait="diver"></div>
+            <div class="tarot-name">The Deadline Diver</div>
+            <div class="tarot-desc">Thrives at 11:59pm.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tarot-card" data-type="juggler">
+        <div class="card-inner">
+          <div class="card-face card-back"><span>T</span></div>
+          <div class="card-face card-front">
+            <div class="tarot-portrait" data-portrait="juggler"></div>
+            <div class="tarot-name">The Juggler</div>
+            <div class="tarot-desc">Many things, somehow works.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tarot-card" data-type="comeback">
+        <div class="card-inner">
+          <div class="card-face card-back"><span>T</span></div>
+          <div class="card-face card-front">
+            <div class="tarot-portrait" data-portrait="comeback"></div>
+            <div class="tarot-name">The Comeback Kid</div>
+            <div class="tarot-desc">Starts late, pulls through.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="hero-hint" id="scroll-cue">↓ keep scrolling to collect the deck</p>
+
+    <div class="quiz-row" id="quiz-row">
+      <div class="deck-col" id="deck-col"></div>
+      <div class="quiz-col">
+        <div class="quiz-box" id="quiz-box">
+          <div class="quiz-question" id="quiz-question"></div>
+          <div class="quiz-options" id="quiz-options"></div>
+          <p class="quiz-result-note" id="quiz-result-note" style="display:none;">That's you — for now. A few days of real use will sharpen this.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRESS CHART (demo data) -->
+<section class="progress-section reveal">
+  <div class="wrap">
+    <div class="section-label">Your week</div>
+    <h2 class="section-title" style="font-family:'Archivo Black',sans-serif;">Progress, tracked.</h2>
+    <div class="progress-chart">
+      <div class="progress-bar"><span>M</span></div>
+      <div class="progress-bar"><span>T</span></div>
+      <div class="progress-bar"><span>W</span></div>
+      <div class="progress-bar"><span>T</span></div>
+      <div class="progress-bar"><span>F</span></div>
+      <div class="progress-bar"><span>S</span></div>
+      <div class="progress-bar"><span>S</span></div>
+    </div>
+    <p class="progress-note">Demo data — becomes your real on-time/late history once usage is tracked over a few days.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section reveal">
+  <div class="wrap">
+    <div class="section-label">Questions</div>
+    <h2 class="section-title" style="font-family:'Archivo Black',sans-serif;">Frequently asked.</h2>
+    <div class="faq-list" id="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">Is Tally actually AI, or just reminders? <span class="plus">+</span></button>
+        <div class="faq-a">It's a real AI Agent reading your calendar and reasoning about what's urgent — not a fixed list of reminder rules. It adapts as your schedule changes.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Does it work with my school's Google Calendar? <span class="plus">+</span></button>
+        <div class="faq-a">Yes — Tally reads directly from Google Calendar, so anything already synced there (school timetable, CCA schedule, personal events) is visible to it.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Do I need to make an account? <span class="plus">+</span></button>
+        <div class="faq-a">Not for this demo — just open the chat and start asking. A real account layer would come with a full launch.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">What happens if the AI gets something wrong? <span class="plus">+</span></button>
+        <div class="faq-a">There's a dedicated error-handling workflow watching in the background, so a failure surfaces as a clear message instead of the bot going silent.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Is this free to use? <span class="plus">+</span></button>
+        <div class="faq-a">This build is a school project demo, so yes — free, and not tied to any pricing plan.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="section-label">Why AI, why now</div>
+    <h2 class="section-title" style="font-family:'Archivo Black',sans-serif;">Every student's week looks different.</h2>
+    <p style="color:var(--slate); max-width:640px; line-height:1.7; font-size:1.05rem;">A generic checklist app can't tell the difference between a 5-minute quiz and a 3-day report. AI can — it reads your actual calendar, weighs deadlines against your free time, and adapts the moment something changes, instead of making you re-plan everything by hand.</p>
+    <a href="how-it-works.html" class="btn btn-ghost" style="margin-top:22px;">Walk through the pipeline →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:10px;">
+    <span>Tally — Accj Team, C240</span>
+    <span>Chua Jiaqi · Avya Kesharwani · Cheang Chee Xuan · Carissa Chng</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
