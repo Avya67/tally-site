@@ -321,7 +321,7 @@ const N8N_WEBHOOK_URL = "https://n8ngc.codeblazar.org/webhook/887baf2a-a560-43b7
       const dist = Math.abs(sectionCenter - viewportCenter);
       const maxDist = vh / 2 + rect.height / 2;
       let progress = 1 - Math.min(dist / maxDist, 1);
-      progress = Math.max(0, Math.min(1, progress * 1.6)); // open a bit eagerly
+      progress = Math.max(0, Math.min(1, progress * 1.15)); // gentler, less eager open
       doors.style.setProperty('--door-progress', progress.toFixed(3));
       ticking = false;
     }
@@ -454,6 +454,12 @@ function pixelPersonSVG(type){
     collected = true;
     if(scrollCue) scrollCue.style.display = 'none';
 
+    // deck-col must be visible BEFORE we measure/move cards into it —
+    // otherwise it's still display:none and every card "arrives" at
+    // (0,0), breaking the travel animation and making cards look like
+    // they just pop into place instead of actually flying into the deck.
+    deckCol.classList.add('active');
+
     cards.forEach((card, i)=>{
       const before = card.getBoundingClientRect();
 
@@ -477,8 +483,6 @@ function pixelPersonSVG(type){
         }, i * 70);
       });
     });
-
-    deckCol.classList.add('active');
 
     setTimeout(()=>{
       quizBox.classList.add('active');

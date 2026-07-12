@@ -593,6 +593,7 @@ footer{
   display:flex;
   align-items:center;
   justify-content:center;
+  transition:transform 0.9s cubic-bezier(.16,.84,.24,1);
 }
 .door.left{
   left:0;
